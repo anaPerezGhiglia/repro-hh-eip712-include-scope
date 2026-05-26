@@ -1,0 +1,36 @@
+{
+  "name": "Repro: HH3 EIP-712 include-scope bug",
+
+  // Debian 12 (bookworm) ships with GLIBC 2.36, which is new enough for
+  // the latest stable Foundry binaries. The bullseye-based images used
+  // elsewhere in this set of repros are stuck at GLIBC 2.31 and break
+  // `forge bind-json` / `forge test` on current Foundry — see the README
+  // for the symptom that originally motivated this devcontainer.
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  },
+
+  // Two installs in one command, in order:
+  //   1. Foundry (downloads `foundryup`, then `foundryup` itself pulls the
+  //      latest stable `forge`/`cast`/`anvil`/`chisel` for this libc).
+  //   2. Hardhat + forge-std (npm dependencies declared in package.json).
+  "postCreateCommand": "curl -L https://foundry.paradigm.xyz | bash && /home/vscode/.foundry/bin/foundryup && npm install",
+
+  // Make `forge` / `cast` / `anvil` available on PATH in every shell
+  // without needing to re-source a shell rc.
+  "remoteEnv": {
+    "PATH": "/home/vscode/.foundry/bin:${containerEnv:PATH}"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "NomicFoundation.hardhat-solidity"
+      ]
+    }
+  }
+}

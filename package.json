@@ -1,0 +1,15 @@
+{
+  "name": "repro-hh-eip712-include-scope",
+  "version": "1.0.0",
+  "description": "Minimal reproduction: Hardhat 3 EIP-712 collector throws HHE818 for a same-named struct in a source the user did not include",
+  "type": "module",
+  "license": "MIT",
+  "devDependencies": {
+    "forge-std": "github:foundry-rs/forge-std#60acb7aaadcce2d68e52986a0a66fe79f07d138f",
+    "hardhat": "^3.6.0"
+  },
+  "scripts": {
+    "test": "npx hardhat test solidity",
+    "compile": "npx hardhat compile"
+  }
+}
