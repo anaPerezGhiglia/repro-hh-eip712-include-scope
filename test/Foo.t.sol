@@ -13,11 +13,18 @@ import {A} from "../contracts/A.sol";
 // `typeNameOrDefinition` — Forge auto-detects which form was passed:
 //   - with a "(", it treats the string as a literal type definition;
 //   - without, it looks the name up in the generated `JsonBindings.sol`.
-// We use the definition form here only to keep the repro independent of
-// `forge bind-json` (whose output file would otherwise be required at
-// runtime). The bug being demonstrated is unaffected by this choice:
-// HHE818 is thrown by Hardhat at collection time, before any cheatcode
-// call runs.
+//
+// We use the definition form here for two reasons:
+//   1. It keeps the repro independent of `forge bind-json`'s generated file.
+//   2. More importantly, it shows just how prematurely Hardhat fails — the
+//      test never even runs, so its cheatcode call (whatever shape it took)
+//      is irrelevant. `HHE818` is thrown at collection time, before any
+//      test code executes. The bug is structural, not dependent on what
+//      the user is actually trying to hash.
+//
+// If you'd rather see the name-form path too, the README explains how
+// to add a `[bind_json]` block and switch the cheatcode call back to
+// `vm.eip712HashStruct("Order", ...)`.
 contract FooTest is Test {
   function test_orderHash() external view {
     A.Order memory o = A.Order({user: address(this), amount: 1});
